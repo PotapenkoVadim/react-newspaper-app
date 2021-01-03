@@ -1,0 +1,23 @@
+.sidebar {
+  grid-area: sidebar;
+  background-color: #333;
+  border-left: 1px solid #333;
+  box-shadow: -1px 0 3px #212121;
+}
+
+.display {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 20px;
+}
+
+.display>h4 {
+  text-align: center;
+  color: #00b7ff;
+  user-select: none;
+}
+
+.lists { margin: 0 auto; }
+@media (max-width: 800px) {
+  .sidebar { display: none; }
+}

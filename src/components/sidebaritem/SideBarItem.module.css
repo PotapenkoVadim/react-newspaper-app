@@ -1,0 +1,6 @@
+.item {
+  margin: 5px 0 5px 10px;
+  color: #aaa;
+  cursor: pointer;
+}
+.item:hover { color: #fff; }

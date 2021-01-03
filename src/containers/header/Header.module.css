@@ -1,0 +1,23 @@
+.header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+
+  background-color: #202020;
+  box-shadow: 0 3px 5px black;
+  z-index: 5;
+}
+
+.logo {
+  color:#00b7ff;
+  align-self: center;
+  font-size: 20px;
+  cursor: pointer;
+  user-select: none;
+  margin-left: 10%;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .logo { margin: 0 auto; }
+}

@@ -1,0 +1,4 @@
+.display {
+  grid-area: display;
+  padding: .5rem;
+}
