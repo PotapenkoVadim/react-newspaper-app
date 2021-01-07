@@ -38,7 +38,9 @@ export class NewsList extends Component {
           news: result
         });
       })
-      .catch(error => error);
+      .catch(error => {
+        this.setState({ load: false });
+      });
   }
 
   render () {
@@ -52,7 +54,7 @@ export class NewsList extends Component {
             ? <Notice title='Loading please wait...' />
             : this.isEmpty()
               ? this.state.news.hits.map(v => <NewsItem key={ v.created_at_i } data={ v } handlerClick={ this.handlerClick } />)
-              : <Notice title='Sorry. News not found.' />
+              : <Notice title='Sorry. An error has occurred. Check your internet connection.' />
         }
       </div>
     );
