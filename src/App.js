@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import styles from './App.module.css';
+
+import { setQueryParams } from './redux/actions';
 
 // containers
 import { Header } from './containers/header/Header';
-import { NewsList } from './containers/newslist/NewsList';
-import { SideBar } from './containers/sidebar/SideBar';
+import NewsList from './containers/newslist/NewsList';
+import SideBar from './containers/sidebar/SideBar';
 // components
 import { SearchWidget } from './components/searchwidget/SearchWidget';
 
-export class App extends Component {
-  state = {
-    string: '',
-    query: ''
-  };
+class App extends Component {
+  state = { string: '' };
 
   handlerSearch = ({ target }) => {
     this.setState({ string: target.value });
@@ -25,18 +25,14 @@ export class App extends Component {
     else 
       value = target.previousElementSibling.value;
 
-    this.setState({
-      string: '',
-      query: value
-    });
+    this.setState({ string: '' });
+    this.props.setQueryParams(value);
   };
 
   handlerKeyPress = e => {
     if (e.code === 'Enter') {
-      this.setState({
-        string: '',
-        query: e.target.value
-      });
+      this.setState({ string: '' });
+      this.props.setQueryParams(e.target.value);
     }
   }
 
@@ -45,15 +41,18 @@ export class App extends Component {
       <div className={ styles.app }>
         <Header>
             <SearchWidget
-              click={ this.handlerClick }
-              change={ this.handlerSearch }
-              value={ this.state.string }
               keypress = { this.handlerKeyPress }
+              change={ this.handlerSearch }
+              click={ this.handlerClick }
+              value={ this.state.string }
             />
         </Header>
-        <NewsList key={ this.state.query } query={ this.state.query } />
+        <NewsList key={ this.props.query } query={ this.props.query } />
         <SideBar />
       </div>
     );
   }
 }
+
+const mapState = state => ({ query: state.app.query });
+export default connect( mapState, { setQueryParams } )(App);

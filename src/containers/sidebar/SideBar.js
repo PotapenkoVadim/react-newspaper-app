@@ -1,65 +1,40 @@
 import { Component } from 'react';
+import { connect } from 'react-redux';
 import styles from './SideBar.module.css';
-import { HOST, METHOD_SEARCH, SORT_PARAMS, QUERY_PARAMS } from '../../configs/hnconfigs';
+import { sidebarModalChange, fetchSidebarNews } from '../../redux/actions';
 
 //components
 import { Notice } from '../../components/notice/Notice';
 import { SideBarItem } from '../../components/sidebaritem/SideBarItem';
 import { Modal } from '../../components/modal/Modal';
 
-export class SideBar extends Component {
-  TIME = Date.now() / 1000;
-  state = {
-    load: true,
-    modal: false,
-    start: this.TIME - 99999900,
-    end: this.TIME,
-    news: {}
-  };
-
+class SideBar extends Component {
   isEmpty () {
-    if (!this.state.load && this.state.news.hits?.length) return true;
+    if (!this.props.load && this.props.news.hits?.length) return true;
     else return false;
   }
 
-  modalHandler = e => {
-    console.log('click');
-    this.setState({ modal: false });
-  }
-
-  handlerClick = e => {
-    this.setState({ modal: true });
-  };
+  modalHandler = e => this.props.sidebarModalChange();
+  handlerClick = e => this.props.sidebarModalChange();
 
   componentDidMount () {
-    const { start, end } = this.state;
-    fetch(`${HOST}${METHOD_SEARCH}?${QUERY_PARAMS}&${SORT_PARAMS}created_at_i>${start},created_at_i<${end}`)
-      .then(res => res.json())
-      .then(result => {
-        this.setState({
-          load: false,
-          news: result
-        });
-      })
-      .catch(error => {
-        this.setState({ load: false })
-      });
+    this.props.fetchSidebarNews(true);
   }
 
   render () {
     return (
       <div className={ styles.sidebar }>
-        <Modal show={ this.state.modal } handler={ this.modalHandler }>
+        <Modal show={ this.props.modal } handler={ this.modalHandler }>
           <p>К сожалению, детальная информация новости, архитектурой приложения, не предусмотрена.</p>
         </Modal>
         <div className={ styles.display }>
           <h4>Latest World News</h4>
           <div className={ styles.lists }>
           { 
-            this.state.load
+            this.props.load
               ? <Notice title='Loading please wait...' />
               : this.isEmpty()
-                ? this.state.news.hits.map(v => <SideBarItem key={ v.created_at_i } data={ v } handler={ this.handlerClick } />)
+                ? this.props.news.hits.map(v => <SideBarItem key={ v.created_at_i } data={ v } handler={ this.handlerClick } />)
                 : <Notice title='Sorry. An error has occurred. Check your internet connection.' />
           }
           </div>
@@ -68,3 +43,10 @@ export class SideBar extends Component {
     );
   }
 }
+
+const mapState = state => ({
+  modal: state.sidebar.modal,
+  load: state.sidebar.load,
+  news: state.sidebar.news
+});
+export default connect( mapState, { sidebarModalChange, fetchSidebarNews } )(SideBar);
